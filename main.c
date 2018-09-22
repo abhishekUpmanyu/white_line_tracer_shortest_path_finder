@@ -14,6 +14,7 @@ int shortestPath[] = {};
 int counter = 0;
 int junctionCounter = 0;
 int dryRun = 1;
+int aligned = 1;
 int finalCounter = 0;
 	
 //straight -> 1
@@ -112,7 +113,7 @@ int main (void)
 	DDRB = 0b00000000;
 	while (1)
 	{	
-		if (dryRun)
+		if (dryRun && aligned)
 		{
 			if (!s1&&s2&&s3&&!s4&&s5)
 				PORTC = 0b00000101;
@@ -127,8 +128,8 @@ int main (void)
 				else
 					right();
 			}
-			else if (!s1&&s2&&s3&&s4&&s5)
-				straight();
+			else if ((s2&&!s3&&!s4&&!s5) ||(!s1&&!s2&&s3&&!s5))
+				aligned = 0;
 			else if (!s1&&s2&&s3&&!s4&&!s5)
 				PORTC = 0b00000101;
 				_delay_ms(INCH);
@@ -141,7 +142,7 @@ int main (void)
 				else if (!s1&&s2&&s3&&!s4&&!s5)
 					uTurn();
 		}
-		else
+		else if (!dryRun && aligned)
 		{
 			if (!s1&&s2&&s3&&!s4&&s5)
 				PORTC = 0b00000101;
@@ -162,7 +163,18 @@ int main (void)
 					right();
 					finalCounter++;
 				}
+				else
+					PORTC = 0b00010000;
 			}
+		}
+		else if (!aligned)
+		{
+			if (s2&&!s3&&!s4&&!s5)
+				PORTC = 0b00000100;
+			else if (!s1&&!s2&&s3&&!s5)
+				PORTC = 0b00000001;
+			else if (s2&&s3&&s5)
+				aligned = 1;
 		}
 	}
 }
