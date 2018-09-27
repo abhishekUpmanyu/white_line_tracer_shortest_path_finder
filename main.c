@@ -6,15 +6,15 @@
 #define s3 bit_is_set(PINB, 2)
 #define s4 bit_is_set(PINB, 1)
 #define s5 bit_is_set(PINB, 0)
+#define a1 bit_is_set(PINB, 5)
+#define a2 bit_is_set(PINB, 6)
 #define TURN 125
-#define INCH 90
+#define INCH 95
 
-int path[][7] = {};
 int shortestPath[] = {};
 int counter = 0;
-int junctionCounter = 0;
-int dryRun = 1;
-int aligned = 1;
+int sum = 0;
+int prev = 0;
 int finalCounter = 0;
 	
 //straight -> 1
@@ -22,159 +22,224 @@ int finalCounter = 0;
 //right -> 4
 //u-turn -> 8
 
-int sum(int ar[])
+void right(int i)
 {
-	int i, sum = 0;
-	for (i = 0; ar[i] != 0; ++i)
-		sum += ar[i];
-	return sum;
-}
-
-void right()
-{
-	if (counter)
-		if (path[junctionCounter][counter-1] != 8)
-			junctionCounter++;
-	path[junctionCounter][counter] = 4;
-	counter++;
 	PORTC = 0b00000110;
-	_delay_ms(TURN);
-    PORTC = 0b00000101;
-	_delay_ms(INCH*2);
+	while (1)
+	{
+		if ((s2||s3)&&s5)
+		{	
+			PORTC = 0b00000101;
+			_delay_ms(INCH);
+			PORTC = 0b00000000;
+			break;
+		}
+	}
+	if (i)
+	{
+		if ((prev == 1) || (prev == 2) || (prev == 4))
+		{
+			if ((sum == 2) || (sum == 13) || (sum == 28)))
+				shortestPath[counter] = 2;
+			else if ((sum == 1) || (sum == 16))
+				shortestPath[i] = 1;
+			else if (sum == 4)
+				shortestPath[i] = 4;
+			counter++;
+			prev = 4;
+			sum = 4;
+		}
+		else
+		{
+			prev = 4;
+			sum += 4;
+		}
+	}
 }
 
-void left()
+void left(int i)
 {
-	if (counter)
-		if (path[junctionCounter][counter-1] != 8)
-			junctionCounter++;
-	path[junctionCounter][counter] = 2;
-	counter++;
 	PORTC = 0b00001001;
-	_delay_ms(TURN);
-	PORTC = 0b00000101;
-	_delay_ms(INCH*2);
-}
-
-void straight()
-{
-	if (counter)
-		if (path[junctionCounter][counter-1] != 8)
-			junctionCounter++;
-	path[junctionCounter][counter] = 1;
-	counter++;
-	PORTC = 0b00000101;
-	_delay_ms(INCH*2);
-}
-
-void uTurn()
-{
-	path[junctionCounter][counter] = 8;
-	counter++;
-	PORTC = 0b00000110;
-	_delay_ms(TURN*2);
-	PORTC = 0b00000101;
-	_delay_ms(INCH*2);
-}
-
-void shortestPathCalculator()
-{
-	int i;
-	for (i = 0; i <= junctionCounter; ++i)
+	while (1)
 	{
-		if ((sum(path[i]) == 2) || (sum(path[i]) == 13) || (sum(path[i] == 28)))
-			shortestPath[i] = 2;
-		else if ((sum(path[i]) == 1) || (sum(path[i]) == 16))
-			shortestPath[i] = 1;
-		else if (sum(path[i]) == 4)
-			shortestPath[i] = 4;
+		if ((s2||s3)&&s5)
+		{	
+			PORTC = 0b00000101;
+			_delay_ms(INCH);
+			PORTC = 0b00000000;
+			break;
+		}
+	}
+	if (1)
+	{
+		if ((prev == 1) || (prev == 2) || (prev == 4))
+		{
+			if ((sum == 2) || (sum == 13) || (sum == 28)))
+				shortestPath[counter] = 2;
+			else if ((sum == 1) || (sum == 16))
+				shortestPath[i] = 1;
+			else if (sum == 4)
+				shortestPath[i] = 4;
+			counter++;
+			prev = 2;
+			sum = 2;
+		}
+		else
+		{
+			prev = 2;
+			sum += 2;
+		}
 	}
 }
 
-int endCheck()
+void straight(int i)
 {
 	PORTC = 0b00000101;
-	_delay_ms(INCH);
-	if (s1&&s2&&s3&&s4&&s5)
+	if (i)
 	{
-		return 1;
+		if ((prev == 1) || (prev == 2) || (prev == 4))
+		{
+			if ((sum == 2) || (sum == 13) || (sum == 28)))
+				shortestPath[counter] = 2;
+			else if ((sum == 1) || (sum == 16))
+				shortestPath[i] = 1;
+			else if (sum == 4)
+				shortestPath[i] = 4;
+			counter++;
+			prev = 1;
+			sum = 1;
+		}
+		else
+		{
+			prev = 1;
+			sum += 1;
+		}
 	}
-	else
+}
+
+void uTurn(int i)
+{
+	while (1)
 	{
 		PORTC = 0b00001010;
-		_delay_ms(INCH);
-		return 0;
+		if (s2||s3)
+			break;
+	}
+	while (1)
+	{
+		PORTC = 0b00000110;
+		if ((s2||s3)&&s5)
+			break;
+	}
+	if (i)
+	{
+		prev = 8;
+		sum += 8;
 	}
 }
 
-int main (void)
+void tJunction()
+{
+	while (1)
+	{
+		if (!s1&&!s2&&!s3&&!s4&&!s5)
+		{
+			uTurn(1);
+			break;
+		}
+		else if (s1&&(s2||s3)&&!s5)
+		{
+			right(1);
+			break;
+		}
+		else if ((s2||s3)&&s4&&!s5)
+		{
+			left(1);
+			break;
+		}
+	}
+}
+
+void alignment()
+{
+	if (a1)
+	{
+		PORTC = 0b00000110;
+		while(1)
+			if (s5)
+			{
+				PORTC = 0b00000101;
+				break;
+			}
+	}
+	else if (a2)
+	{
+		PORTC = 0b00001001;
+		while(1)
+			if (s5)
+			{
+				PORTC = 0b00000101;
+				break;
+			}
+	}
+}
+
+void dryRun()
+{
+	while (1)
+	{
+		if (!s1&&(s2||s3)&&!s4&&s5)
+			PORTC = 0b00000101;
+		else if (s1&&(s2||s3))
+			right(1);
+		else if ((s2||s3)&&s4)
+			left(1);
+		else if (!s1&&(s2||s3)&&!s4&&!s5)
+		{
+			PORTC = 0b00000101;
+			tJunction();
+		}
+		else if (s1&&s2&&s3&&s4&&s5&&a1&&a2)
+		{
+			PORTC = 0b00010000;
+			break;
+		}
+		else if ((a1||a2)&&!s5)
+		{
+			alignment();
+		}
+	}
+}
+
+int main ()
 {
 	DDRC = 0b11111111;
 	DDRB = 0b00000000;
 	while (1)
 	{	
-		if (dryRun && aligned)
+		dryRun();
+		_delay_ms(10000);
+		if (!s1&&(s2||s3)&&!s4&&s5)
+			PORTC = 0b00000101;
+		else if ((s1&&s2&&s3&&!s4&&s5) || (!s1&&s2&&s3&&s4&&s5) || (s1&&s2&&s3&&s4&&s5) || (s1&&s2&&s3&&!s4&&!s5) || (!s1&&s2&&s3&&s4&&s5) || (s1&&s2&&s3&&s4&&!s5))
 		{
-			if (!s1&&s2&&s3&&!s4&&s5)
-				PORTC = 0b00000101;
-			else if (s1&&s2&&s3&&s4&&s5)
+			if (shortestPath[finalCounter] == 1)
 			{
-				if (endCheck())
-				{
-					PORTC = 0b00010000;
-					shortestPathCalculator();
-					dryRun = 0;
-				}
-				else
-					right();
+				straight(0);
+				finalCounter++;
 			}
-			else if ((s2&&!s3&&!s4&&!s5) ||(!s1&&!s2&&s3&&!s5))
-				aligned = 0;
-			else if (!s1&&s2&&s3&&!s4&&!s5)
-				PORTC = 0b00000101;
-				_delay_ms(INCH);
-				if (s1&&s2&&s3&&s4)
-					right();
-				else if (s1&&s2&&s3&&!s4)
-					right();
-				else if (!s1&&s2&&s3&&s4)
-					left();
-				else if (!s1&&s2&&s3&&!s4&&!s5)
-					uTurn();
-		}
-		else if (!dryRun && aligned)
-		{
-			if (!s1&&s2&&s3&&!s4&&s5)
-				PORTC = 0b00000101;
-			else if ((s1&&s2&&s3&&!s4&&s5) || (!s1&&s2&&s3&&s4&&s5) || (s1&&s2&&s3&&s4&&s5) || (s1&&s2&&s3&&!s4&&!s5) || (!s1&&s2&&s3&&s4&&s5) || (s1&&s2&&s3&&s4&&!s5))
+			else if (shortestPath[finalCounter] == 2)
 			{
-				if (shortestPath[finalCounter] == 1)
-				{
-					straight();
-					finalCounter++;
-				}
-				else if (shortestPath[finalCounter] == 2)
-				{
-					left();
-					finalCounter++;
-				}
-				else if (shortestPath[finalCounter] == 4)
-				{
-					right();
-					finalCounter++;
-				}
-				else
-					PORTC = 0b00010000;
+				left(0);
+				finalCounter++;
 			}
-		}
-		else if (!aligned)
-		{
-			if (s2&&!s3&&!s4&&!s5)
-				PORTC = 0b00000100;
-			else if (!s1&&!s2&&s3&&!s5)
-				PORTC = 0b00000001;
-			else if (s2&&s3&&s5)
-				aligned = 1;
+			else if (shortestPath[finalCounter] == 4)
+			{
+				right(0);
+				finalCounter++;
+			}
+			else
+				PORTC = 0b00010000;
 		}
 	}
 }

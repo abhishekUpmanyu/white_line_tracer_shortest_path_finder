@@ -13,10 +13,10 @@
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
 DEVICE     = atmega8
-CLOCK      = 4000000
+CLOCK      = 8000000
 PROGRAMMER = -c arduino -P COM10 -b 19200 
 OBJECTS    = main.o
-FUSES      = -U lfuse:w:0xe1:m -U hfuse:w:0xd9:m
+FUSES      = -U lfuse:w:0xe4:m -U hfuse:w:0xd9:m
 
 
 ######################################################################
