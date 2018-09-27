@@ -39,7 +39,7 @@ void right(int i)
 	{
 		if ((prev == 1) || (prev == 2) || (prev == 4))
 		{
-			if ((sum == 2) || (sum == 13) || (sum == 28)))
+			if ((sum == 2) || (sum == 13) || (sum == 28))
 				shortestPath[counter] = 2;
 			else if ((sum == 1) || (sum == 16))
 				shortestPath[i] = 1;
@@ -74,7 +74,7 @@ void left(int i)
 	{
 		if ((prev == 1) || (prev == 2) || (prev == 4))
 		{
-			if ((sum == 2) || (sum == 13) || (sum == 28)))
+			if ((sum == 2) || (sum == 13) || (sum == 28))
 				shortestPath[counter] = 2;
 			else if ((sum == 1) || (sum == 16))
 				shortestPath[i] = 1;
@@ -99,7 +99,7 @@ void straight(int i)
 	{
 		if ((prev == 1) || (prev == 2) || (prev == 4))
 		{
-			if ((sum == 2) || (sum == 13) || (sum == 28)))
+			if ((sum == 2) || (sum == 13) || (sum == 28))
 				shortestPath[counter] = 2;
 			else if ((sum == 1) || (sum == 16))
 				shortestPath[i] = 1;
