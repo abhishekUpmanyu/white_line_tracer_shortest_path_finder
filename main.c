@@ -202,6 +202,8 @@ void dryRun()
 		else if (s1&&s2&&s3&&s4&&s5&&a1&&a2)
 		{
 			PORTC = 0b00010000;
+			shortestPath[counter] = sum;
+			shortestPath[counter+1] = 0;
 			break;
 		}
 		else if ((a1||a2)&&!s5)
@@ -238,7 +240,7 @@ int main ()
 				right(0);
 				finalCounter++;
 			}
-			else
+			else if (shortestPath[finalCounter] == 0)
 				PORTC = 0b00010000;
 		}
 	}
